@@ -1,7 +1,6 @@
-import {Component, inject, Signal} from '@angular/core';
-import {WeatherService} from "../weather.service";
-import {LocationService} from "../location.service";
-import {Router} from "@angular/router";
+import {Component, inject, OutputEmitterRef, Signal, output, input} from '@angular/core';
+import {WeatherService} from '../weather.service';
+import {Router} from '@angular/router';
 import {ConditionsAndZip} from '../conditions-and-zip.type';
 
 @Component({
@@ -11,12 +10,28 @@ import {ConditionsAndZip} from '../conditions-and-zip.type';
 })
 export class CurrentConditionsComponent {
 
-  private weatherService = inject(WeatherService);
+  /**
+   * Remove location output event
+   */
+  removeLocation: OutputEmitterRef<string> = output();
+
+  /**
+   * Represents the current conditions by zip code.
+   * InputSignal is used to ensure that the component can receive data from its parent component.
+   */
+  readonly currentConditionsByZip: Signal<ConditionsAndZip[]> = input.required();
+
   private router = inject(Router);
-  protected locationService = inject(LocationService);
-  protected currentConditionsByZip: Signal<ConditionsAndZip[]> = this.weatherService.getCurrentConditions();
 
   showForecast(zipcode : string){
     this.router.navigate(['/forecast', zipcode])
+  }
+
+  /**
+   * Emit the zipCode to removeLocation.
+   * @param zipCode
+   */
+  selectedLocation(zipCode: string) {
+    this.removeLocation.emit(zipCode);
   }
 }
