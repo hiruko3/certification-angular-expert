@@ -14,24 +14,24 @@ import {routing} from "./app.routing";
 import {HttpClientModule} from "@angular/common/http";
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import {TabsComponent} from './tabs/tabs.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    ZipcodeEntryComponent,
-    ForecastsListComponent,
-    CurrentConditionsComponent,
-    MainPageComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    RouterModule,
-    routing,
-    ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
-  ],
-  providers: [LocationService, WeatherService],
-  bootstrap: [AppComponent]
+    declarations: [AppComponent],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        HttpClientModule,
+        RouterModule,
+        routing,
+        ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production }),
+        TabsComponent,
+        ZipcodeEntryComponent,
+        ForecastsListComponent,
+        CurrentConditionsComponent,
+        MainPageComponent
+    ],
+    providers: [LocationService, WeatherService],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

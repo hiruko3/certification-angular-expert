@@ -1,11 +1,17 @@
-import {Component, effect, inject, Signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, Signal} from '@angular/core';
 import {LocationService} from '../location.service';
 import {WeatherService} from '../weather.service';
 import {ConditionsAndZip} from '../conditions-and-zip.type';
+import {CurrentConditionsComponent} from '../current-conditions/current-conditions.component';
+import {ZipcodeEntryComponent} from '../zipcode-entry/zipcode-entry.component';
+import {JsonPipe} from '@angular/common';
 
 @Component({
     selector: 'app-main-page',
-    templateUrl: './main-page.component.html'
+    templateUrl: './main-page.component.html',
+    standalone: true,
+    imports: [ZipcodeEntryComponent, CurrentConditionsComponent, JsonPipe],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainPageComponent {
 
@@ -35,7 +41,9 @@ export class MainPageComponent {
          * We don't want to use the effect here, as we want to initialize the current conditions based on the locations initialized in the location service.
          */
         this.locations().forEach((zipCode: string) => {
-            this.weatherService.addCurrentConditions(zipCode);
+            if (!this.conditions().some(condition => condition.zip === zipCode)) {
+                this.weatherService.addCurrentConditions(zipCode);
+            }
         })
     }
 
@@ -55,7 +63,10 @@ export class MainPageComponent {
      */
     removeLocationSelected(zipCode: string): void {
         this.locationService.removeLocation(zipCode);
-        this.weatherService.removeCurrentConditions(zipCode);
     }
+
+    /**
+     *
+     */
 
 }

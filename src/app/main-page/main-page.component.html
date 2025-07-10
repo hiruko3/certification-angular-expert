@@ -1,6 +1,11 @@
 <div class="container-fluid">
-
+    @for(condition of this.conditions(); track condtion){
+        {{condition.zip |json}}
+    }
+    <h1>Weather App</h1>
+    @for(location of this.locations(); track condtion){
+        {{location |json}}
+    }
   <app-zipcode-entry (addLocation)="addLocationSelected($event)"> </app-zipcode-entry>
   <app-current-conditions (removeLocation)="removeLocationSelected($event)" [currentConditionsByZip]="conditions()"></app-current-conditions>
-
 </div>

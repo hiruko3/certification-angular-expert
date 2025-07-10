@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
 import {WeatherService} from '../weather.service';
-import {ActivatedRoute} from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import {Forecast} from './forecast.type';
+import { NgFor, DecimalPipe, DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-forecasts-list',
-  templateUrl: './forecasts-list.component.html',
-  styleUrls: ['./forecasts-list.component.css']
+    selector: 'app-forecasts-list',
+    templateUrl: './forecasts-list.component.html',
+    styleUrls: ['./forecasts-list.component.css'],
+    standalone: true,
+    imports: [NgFor, RouterLink, DecimalPipe, DatePipe]
 })
 export class ForecastsListComponent {
 

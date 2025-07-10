@@ -1,9 +1,12 @@
-import {Component, output, OutputEmitterRef} from '@angular/core';
-import {LocationService} from "../location.service";
+import {ChangeDetectionStrategy, Component, output, OutputEmitterRef} from '@angular/core';
+import {LocationService} from '../location.service';
 
 @Component({
-  selector: 'app-zipcode-entry',
-  templateUrl: './zipcode-entry.component.html'
+    selector: 'app-zipcode-entry',
+    templateUrl: './zipcode-entry.component.html',
+    standalone: true,
+    changeDetection: ChangeDetectionStrategy.OnPush
+
 })
 export class ZipcodeEntryComponent {
 
