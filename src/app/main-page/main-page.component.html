@@ -1,6 +1,14 @@
 <div class="container-fluid">
+    @for(loc of locations(); track loc) {
+        {{loc}}
+    }
 
+    --------------------
+
+
+    @for(cond of conditions(); track cond) {
+        {{cond.zip}}
+    }
   <app-zipcode-entry (addLocation)="addLocationSelected($event)"> </app-zipcode-entry>
   <app-current-conditions (removeLocation)="removeLocationSelected($event)" [currentConditionsByZip]="conditions()"></app-current-conditions>
-
 </div>

@@ -1,0 +1,13 @@
+/* Style for the cross-close icon in the tabs on hover*/
+.cross-close {
+    margin-left: 20px;
+}
+
+.cross-close:hover {
+    color: #6200ea;
+}
+
+.active-tab-class {
+    background-color:  #1096d2;
+    border-bottom: 2px solid  darkcyan;
+}

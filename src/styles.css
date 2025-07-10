@@ -2,3 +2,23 @@
 body {
   padding: 10px;
 }
+
+/*
+Generate a css class for a button flat design
+ */
+.my-button {
+  background-color: #1976d2;
+  color: #fff;
+  border: 1px solid #ffffff;
+  border-radius: 0px;
+  padding: 10px 20px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  min-width: 150px;
+  min-height: 50px;
+}
+
+.my-button:hover {
+  background-color: #1565c0;
+}
