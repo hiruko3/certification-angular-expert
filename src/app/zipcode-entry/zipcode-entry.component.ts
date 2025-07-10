@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, output, OutputEmitterRef} from '@angular/core';
 import {LocationService} from "../location.service";
 
 @Component({
@@ -7,10 +7,19 @@ import {LocationService} from "../location.service";
 })
 export class ZipcodeEntryComponent {
 
+  /**
+   * Emit the zipCode to addLocation to the location service.
+   */
+  addLocation: OutputEmitterRef<string> = output();
+
   constructor(private service : LocationService) { }
 
-  addLocation(zipcode : string){
-    this.service.addLocation(zipcode);
+  /**
+   * Select a location by zipcode.
+   * @param zipcode the zipcode selected by the user
+   */
+  selectLocation(zipcode : string){
+    this.addLocation.emit(zipcode)
   }
 
 }
