@@ -46,38 +46,38 @@ export class MainPageComponent {
             }
         })
 
-        if (this.conditions().length > 0) {
-
-            // count occurence of each zip code in the conditions
-            const frequencyLocation: Map<string, number> = new Map<string, number>();
-            for (let location of this.locations()) {
-                if (frequencyLocation.get(location)) {
-                    const occurence = frequencyLocation.get(location);
-                    frequencyLocation.set(location, occurence + 1);
-                } else {
-                    frequencyLocation.set(location, 1);
-                }
-            }
-
-            const frequencyCondition: Map<string, number> = new Map<string, number>();
-            for (let condition of this.conditions()) {
-                if (frequencyCondition.get(condition.zip)) {
-                    const occurence = frequencyCondition.get(condition.zip);
-                    frequencyCondition.set(condition.zip, occurence + 1);
-                } else {
-                    frequencyCondition.set(condition.zip, 1);
-                }
-            }
-
-            this.conditions().forEach((condition: ConditionsAndZip) => {
-                const diffBetweenConditionAndLocation = (frequencyCondition.get(condition.zip) || 0) - (frequencyLocation.get(condition.zip) || 0);
-                if (diffBetweenConditionAndLocation > 0) {
-                    for (let i = 0; i < diffBetweenConditionAndLocation; i++) {
-                        this.weatherService.removeCurrentConditions(condition.zip)
-                    }
-                }
-            })
-        }
+        // if (this.conditions().length > 0) {
+        //
+        //     // count occurence of each zip code in the conditions
+        //     const frequencyLocation: Map<string, number> = new Map<string, number>();
+        //     for (let location of this.locations()) {
+        //         if (frequencyLocation.get(location)) {
+        //             const occurence = frequencyLocation.get(location);
+        //             frequencyLocation.set(location, occurence + 1);
+        //         } else {
+        //             frequencyLocation.set(location, 1);
+        //         }
+        //     }
+        //
+        //     const frequencyCondition: Map<string, number> = new Map<string, number>();
+        //     for (let condition of this.conditions()) {
+        //         if (frequencyCondition.get(condition.zip)) {
+        //             const occurence = frequencyCondition.get(condition.zip);
+        //             frequencyCondition.set(condition.zip, occurence + 1);
+        //         } else {
+        //             frequencyCondition.set(condition.zip, 1);
+        //         }
+        //     }
+        //
+        //     this.conditions().forEach((condition: ConditionsAndZip) => {
+        //         const diffBetweenConditionAndLocation = (frequencyCondition.get(condition.zip) || 0) - (frequencyLocation.get(condition.zip) || 0);
+        //         if (diffBetweenConditionAndLocation > 0) {
+        //             for (let i = 0; i < diffBetweenConditionAndLocation; i++) {
+        //                 this.weatherService.removeCurrentConditions(condition.zip)
+        //             }
+        //         }
+        //     })
+        // }
 
 
     }
@@ -98,6 +98,7 @@ export class MainPageComponent {
      */
     removeLocationSelected(zipCode: string): void {
         this.locationService.removeLocation(zipCode);
+        this.weatherService.removeCurrentConditions(zipCode);
     }
 
     /**

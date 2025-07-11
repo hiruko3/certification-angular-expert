@@ -22,11 +22,17 @@ export class WeatherService {
       .subscribe(data => this.currentConditions.update(conditions => [...conditions, {zip: zipcode, data, icon: this.getWeatherIcon(data.weather[0].id)}]));
   }
 
+  /**
+   * Remove all conditions for a given zipcode.
+   * @param zipcode
+   */
   removeCurrentConditions(zipcode: string) {
     this.currentConditions.update(conditions => {
-      for (let i in conditions) {
-        if (conditions[i].zip == zipcode)
+      for (let i: number = 0; i < conditions.length; i++) {
+        if (conditions[i].zip == zipcode) {
           conditions.splice(+i, 1);
+          i = 0;
+        }
       }
       return conditions;
     })
