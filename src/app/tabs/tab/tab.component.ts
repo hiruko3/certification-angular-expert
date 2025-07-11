@@ -38,6 +38,12 @@ export class TabComponent<T> {
 
   }
 
+  /**
+   * Needed the first time the tab is rendered.
+   * AfterContentInit is called after signal reactivity is set up,
+   * so that the component can respond to changes in its inputs.
+   * It Should be implemented with specific internal logic that displays dynamic content.
+   */
   forceRendering(): void {
     this.changeDetectorRef.detectChanges();
   }

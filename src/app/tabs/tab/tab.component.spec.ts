@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TabComponent } from './tab.component';
 
 describe('TabComponent', () => {
-  let component: TabComponent;
-  let fixture: ComponentFixture<TabComponent>;
+  let component: TabComponent<string>;
+  let fixture: ComponentFixture<TabComponent<string>>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -12,7 +12,7 @@ describe('TabComponent', () => {
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(TabComponent);
+    fixture = TestBed.createComponent(TabComponent<string>);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -20,4 +20,8 @@ describe('TabComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should have default label as empty string', () => {
+    expect(component.label()).toBe('');
+  })
 });

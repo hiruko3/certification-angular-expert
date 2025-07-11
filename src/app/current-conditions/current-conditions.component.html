@@ -18,23 +18,10 @@
                         </p>
                     </div>
                     <div>
-                        <span class="close" (click)="selectedLocation(location.zip)">&times;</span>
                         <img [src]="location.icon">
                     </div>
                 </div>
             </app-tab>
         }
-    </app-tabs>
-<!-- todo: delete this -->
-    <app-tabs (onCloseTab)="onRemoveLocation($event)">
-            <app-tab [label]="'test'"  [id]="{test: 'key1'}">
-                    Je suis le contenue 1
-            </app-tab>
-        <app-tab [label]="'test'"  [id]="{test: 'key1'}">
-            Je suis le contenue 1
-        </app-tab>
-        <app-tab [label]="'test 2'"  [id]="{test: 'key2'}">
-            Je suis le contenue 2
-        </app-tab>
     </app-tabs>
 </div>

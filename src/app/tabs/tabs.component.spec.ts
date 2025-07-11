@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TabsComponent } from './tabs.component';
 
 describe('TabsComponent', () => {
-  let component: TabsComponent;
-  let fixture: ComponentFixture<TabsComponent>;
+  let component: TabsComponent<string>;
+  let fixture: ComponentFixture<TabsComponent<string>>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -12,7 +12,7 @@ describe('TabsComponent', () => {
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(TabsComponent);
+    fixture = TestBed.createComponent(TabsComponent<string>);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

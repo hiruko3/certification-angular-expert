@@ -34,9 +34,11 @@ export class TabsComponent<T> {
             const tabs: readonly TabComponent<T>[] = this.tabElements();
             if (tabs && tabs.length > 0) {
                 // Set the first tab as active by default
-                const firstTabVisible = this.tabElements().find(tab => tab.isVisible);
-                firstTabVisible.isActive = true;
-                firstTabVisible.forceRendering();
+                if (!tabs.some((tab) => tab.isActive)) {
+                    const firstTabVisible = this.tabElements().find(tab => tab.isVisible);
+                    firstTabVisible.isActive = true;
+                    firstTabVisible.forceRendering();
+                }
             }
         })
     }
@@ -49,26 +51,28 @@ export class TabsComponent<T> {
     }
 
     /**
-     * Emit a remove event for the tab with the given id.
+     * Hide a tab instead of removing it from the DOM.
      * It will hide the tab and emit an event to handle the logic outside of the component.
-     * We activate the first tab if the removed tab was active.
+     * We activate the first tab if the removed tab was active, else we stay on the current active tab.
      * @param tabToHide the tab to hide
      */
     removeTab(tabToHide: TabComponent<T>): void {
         this.hideTab(tabToHide)
-        this.activateFirstVisibleTab();
-        // this.onRemove.emit(tabToHide.id());
+        // only activate a new tab if the tab to hide is active
+        if(tabToHide.isActive) {
+            this.deactivateTab();
+            this.activateFirstVisibleTab();
+        }
     }
 
     /**
      * We hide the tab instead of removing it from the DOM.
-     * We deactivate all tabs.
+     * emit the onCloseTab event to handle the logic outside of the component.
      * @param tabToHide the tab to hide
      */
     hideTab(tabToHide: TabComponent<T>): void {
         // hide the tab instead of removing it from the DOM
         tabToHide.isVisible = false;
-        this.deactivateTab();
         this.onCloseTab.emit(tabToHide.id());
     }
 
@@ -89,7 +93,7 @@ export class TabsComponent<T> {
     activateFirstVisibleTab(): void {
         //Activate the first visible tab if the removed tab was active
         const tabToActivate = this.tabElements().find(tab => tab.isVisible);
-        if(tabToActivate) {
+        if (tabToActivate) {
             tabToActivate.isActive = true;
         }
     }

@@ -38,19 +38,9 @@ export class CurrentConditionsComponent<T> {
         this.router.navigate(['/forecast', zipcode])
     }
 
-    /**
-     * Emit the zipCode to removeLocation.
-     * @param zipCode
-     */
-    selectedLocation(zipCode: T) {
-        this.removeLocation.emit(zipCode);
-    }
-
     onRemoveLocationTab(id: T) {
         this.removeLocation.emit(id);
     }
-    onRemoveLocation(obj : T) {
-        console.log(obj)
-    }
+
 
 }
