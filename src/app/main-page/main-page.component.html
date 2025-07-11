@@ -1,0 +1,4 @@
+<div class="container-fluid">
+  <app-zipcode-entry (addLocation)="addLocationSelected($event)"> </app-zipcode-entry>
+  <app-current-conditions (removeLocation)="removeLocationSelected($event)" [currentConditionsByZip]="conditions()"></app-current-conditions>
+</div>
