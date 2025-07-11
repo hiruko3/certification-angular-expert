@@ -44,7 +44,6 @@ export class LocationService {
     removeLocation(zipcode: string) {
         let index = this.locations().indexOf(zipcode);
         if (index !== -1) {
-            console.log(`Removing location: ${zipcode} at index ${index}`);
             this.locations.update((): string[] => {
                 const locations = [...this.locations()];
                 locations.splice(index, 1)

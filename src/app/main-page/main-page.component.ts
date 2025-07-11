@@ -4,6 +4,7 @@ import {WeatherService} from '../weather.service';
 import {ConditionsAndZip} from '../conditions-and-zip.type';
 import {CurrentConditionsComponent} from '../current-conditions/current-conditions.component';
 import {ZipcodeEntryComponent} from '../zipcode-entry/zipcode-entry.component';
+import {createFrequencyMap} from '../utils/utils';
 
 @Component({
     selector: 'app-main-page',
@@ -38,7 +39,6 @@ export class MainPageComponent {
 
 
         // We don't want to use the effect here, as we want to initialize the current conditions based on the locations initialized in the location service.
-
         this.locations().forEach((zipCode: string) => {
             // Check if the current conditions for the zip code already exist
             if (!this.conditions().some(condition => condition.zip === zipCode)) {
@@ -46,41 +46,26 @@ export class MainPageComponent {
             }
         })
 
-        // if (this.conditions().length > 0) {
-        //
-        //     // count occurence of each zip code in the conditions
-        //     const frequencyLocation: Map<string, number> = new Map<string, number>();
-        //     for (let location of this.locations()) {
-        //         if (frequencyLocation.get(location)) {
-        //             const occurence = frequencyLocation.get(location);
-        //             frequencyLocation.set(location, occurence + 1);
-        //         } else {
-        //             frequencyLocation.set(location, 1);
-        //         }
-        //     }
-        //
-        //     const frequencyCondition: Map<string, number> = new Map<string, number>();
-        //     for (let condition of this.conditions()) {
-        //         if (frequencyCondition.get(condition.zip)) {
-        //             const occurence = frequencyCondition.get(condition.zip);
-        //             frequencyCondition.set(condition.zip, occurence + 1);
-        //         } else {
-        //             frequencyCondition.set(condition.zip, 1);
-        //         }
-        //     }
-        //
-        //     this.conditions().forEach((condition: ConditionsAndZip) => {
-        //         const diffBetweenConditionAndLocation = (frequencyCondition.get(condition.zip) || 0) - (frequencyLocation.get(condition.zip) || 0);
-        //         if (diffBetweenConditionAndLocation > 0) {
-        //             for (let i = 0; i < diffBetweenConditionAndLocation; i++) {
-        //                 this.weatherService.removeCurrentConditions(condition.zip)
-        //             }
-        //         }
-        //     })
-        // }
+        // We sync the current conditions with the locations.
+        if (this.conditions().length > 0) {
+            // count occurence of each zip code in the conditions
+            const frequencyLocation: Map<string, number> = createFrequencyMap(this.locations());
+            const frequencyCondition: Map<string, number> = createFrequencyMap(this.conditions().map((condition: ConditionsAndZip): string => condition.zip));
 
-
+            // If the frequency of the condition is greater than the frequency of the location, we remove the condition.
+            frequencyCondition.forEach((key: number, value: string) => {
+                const diffBetweenConditionAndLocation = (frequencyCondition.get(value) || 0) - (frequencyLocation.get(value) || 0);
+                if (diffBetweenConditionAndLocation > 0) {
+                    for (let i = 0; i < diffBetweenConditionAndLocation; i++) {
+                        this.weatherService.removeCondition(value)
+                    }
+                }
+            })
+        }
     }
+
+
+
 
     /**
      * Add a location to the location service.
@@ -94,15 +79,11 @@ export class MainPageComponent {
 
     /**
      * Remove a location from the location service.
+     * Remove the current conditions for the location as well.
+     * We keep the current logic that keeps the locations but removing all conditions associated with the location.
      * @param zipCode
      */
     removeLocationSelected(zipCode: string): void {
         this.locationService.removeLocation(zipCode);
-        this.weatherService.removeCurrentConditions(zipCode);
     }
-
-    /**
-     *
-     */
-
 }

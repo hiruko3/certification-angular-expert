@@ -3,14 +3,12 @@ body {
   padding: 10px;
 }
 
-/*
-Generate a css class for a button flat design
- */
-.my-button {
+
+.tab-header-button {
   background-color: #1976d2;
   color: #fff;
   border: 1px solid #ffffff;
-  border-radius: 0px;
+  border-radius: 0;
   padding: 10px 20px;
   font-size: 1.5rem;
   cursor: pointer;
@@ -19,6 +17,6 @@ Generate a css class for a button flat design
   min-height: 50px;
 }
 
-.my-button:hover {
+.tab-header-button:hover {
   background-color: #1565c0;
 }
