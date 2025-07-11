@@ -34,10 +34,18 @@ export class CurrentConditionsComponent<T> {
 
     private router = inject(Router);
 
+    /**
+     * Redirects to the forecast page for the given zipcode.
+     * @param zipcode
+     */
     showForecast(zipcode: string) {
         this.router.navigate(['/forecast', zipcode])
     }
 
+    /**
+     * Remove location tab will trigger the removeLocation output event.
+     * @param id
+     */
     onRemoveLocationTab(id: T) {
         this.removeLocation.emit(id);
     }

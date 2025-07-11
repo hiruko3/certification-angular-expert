@@ -15,6 +15,7 @@ import {HttpClientModule} from "@angular/common/http";
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import {TabsComponent} from './tabs/tabs.component';
+import {CACHE_DURATION, CacheStorageService} from './cache/cache-storage.service';
 
 @NgModule({
     declarations: [AppComponent],
@@ -31,7 +32,11 @@ import {TabsComponent} from './tabs/tabs.component';
         CurrentConditionsComponent,
         MainPageComponent
     ],
-    providers: [LocationService, WeatherService],
+    providers: [LocationService, WeatherService, CacheStorageService,
+        {
+            provide: CACHE_DURATION,
+            useValue: 10 * 1000 // override the default cache duration to 10 seconds
+        }],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

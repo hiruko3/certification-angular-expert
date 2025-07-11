@@ -35,7 +35,6 @@ export class TabComponent<T> {
   isVisible = true;
 
   constructor (private changeDetectorRef: ChangeDetectorRef) {
-
   }
 
   /**
