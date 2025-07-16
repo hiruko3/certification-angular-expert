@@ -13,11 +13,11 @@ describe('CacheStorageService', () => {
         });
 
         service = TestBed.inject(CacheStorageService);
-        sessionStorage.clear(); // Clear before each test
+        localStorage.clear(); // Clear before each test
     });
 
     afterEach(() => {
-        sessionStorage.clear(); // Clean up after each test
+        localStorage.clear(); // Clean up after each test
     });
 
     it('should be created', () => {
@@ -45,7 +45,7 @@ describe('CacheStorageService', () => {
         setTimeout(() => {
             const result = service.getItem('expiredKey');
             expect(result).toBeNull();
-            expect(sessionStorage.getItem('expiredKey')).toBeNull();
+            expect(localStorage.getItem('expiredKey')).toBeNull();
             done();
         }, CACHE_DURATION_VALUE + 1); // Wait slightly longer than 1 second
     });
@@ -67,11 +67,11 @@ describe('CacheStorageService', () => {
         });
 
         service = TestBed.inject(CacheStorageService);
-        sessionStorage.clear(); // Clear before each test
+        localStorage.clear(); // Clear before each test
     });
 
     afterEach(() => {
-        sessionStorage.clear(); // Clean up after each test
+        localStorage.clear(); // Clean up after each test
     });
 
     it('should use default cache duration if not provided', () => {

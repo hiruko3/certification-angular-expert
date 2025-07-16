@@ -13,7 +13,7 @@ export class CacheStorageService implements CacheInterface<string> {
     readonly cacheDuration: number = inject(CACHE_DURATION, {optional: true}) ?? 60 * 1000 * 120; // Default to 2 hours
 
     /**
-     * Sets an item in the cache with sessionStorage.
+     * Sets an item in the cache with localStorage.
      * It stringifies the value before storing it.
      * @param key
      * @param value
@@ -24,11 +24,11 @@ export class CacheStorageService implements CacheInterface<string> {
             timeStamp: Date.now() // Store the current timestamp
         };
         console.log(`Setting cache item with key: ${key}, value: ${JSON.stringify(value)}, cacheDuration: ${this.cacheDuration}`);
-        sessionStorage.setItem(key, JSON.stringify(cacheEntry));
+        localStorage.setItem(key, JSON.stringify(cacheEntry));
     }
 
     /**
-     * Retrieves an item from the cache with sessionStorage.
+     * Retrieves an item from the cache with localStorage.
      * It checks if the item is still valid based on the cache duration.
      * If the item is expired, it removes it from the cache.
      * If the item is valid, it returns the stringified value.
@@ -37,7 +37,7 @@ export class CacheStorageService implements CacheInterface<string> {
      */
     getItem(key: string): string {
         let item: string | null = null;
-        const cacheEntryString: string = sessionStorage.getItem(key);
+        const cacheEntryString: string = localStorage.getItem(key);
         if (cacheEntryString) {
             const cacheEntry: CacheEntry<any> = JSON.parse(cacheEntryString);
             const currentTime: number = Date.now();
@@ -45,7 +45,7 @@ export class CacheStorageService implements CacheInterface<string> {
             // Check if the cache entry is still valid based on the cache duration
             if (currentTime - cacheEntry.timeStamp > this.cacheDuration) {
                 console.log(`Cache item with key: ${key} has expired. Removing from cache.`);
-                sessionStorage.removeItem(key); // Remove expired item
+                localStorage.removeItem(key); // Remove expired item
             } else {
                 console.log(`Cache item with key: ${key} is valid. Returning cached value.`);
                 item = JSON.stringify(cacheEntry.value); // Return the cached value
