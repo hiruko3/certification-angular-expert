@@ -67,6 +67,34 @@ export class TabsComponent<T> implements AfterContentInit{
         })
     }
 
+
+    /**
+     * Select a tab by setting its isActive property to true.
+     * Deactivate all other tabs, we can only have one active tab at a time.
+     * @param tab
+     * @public
+     */
+    public selectTab(tab: TabComponent<T>): void {
+        this.deactivateTab();
+        tab.isActive = true;
+    }
+
+    /**
+     * Hide a tab instead of removing it from the DOM.
+     * It will hide the tab and emit an event to handle the logic outside of the component.
+     * We activate the first tab if the removed tab was active, else we stay on the current active tab.
+     * @param tabToHide the tab to hide
+     * @public
+     */
+    public removeTab(tabToHide: TabComponent<T>): void {
+        this.hideTab(tabToHide)
+        // only activate a new tab if the tab to hide is active
+        if(tabToHide.isActive) {
+            this.deactivateTab();
+            this.activateFirstVisibleTab();
+        }
+    }
+
     /**
      * Activate the first visible tab.
      * @param tabs
@@ -80,37 +108,14 @@ export class TabsComponent<T> implements AfterContentInit{
         }
     }
 
-    /**
-     * Select a tab by setting its isActive property to true.
-     * Deactivate all other tabs, we can only have one active tab at a time.
-     * @param tab
-     */
-    selectTab(tab: TabComponent<T>): void {
-        this.deactivateTab();
-        tab.isActive = true;
-    }
-
-    /**
-     * Hide a tab instead of removing it from the DOM.
-     * It will hide the tab and emit an event to handle the logic outside of the component.
-     * We activate the first tab if the removed tab was active, else we stay on the current active tab.
-     * @param tabToHide the tab to hide
-     */
-    removeTab(tabToHide: TabComponent<T>): void {
-        this.hideTab(tabToHide)
-        // only activate a new tab if the tab to hide is active
-        if(tabToHide.isActive) {
-            this.deactivateTab();
-            this.activateFirstVisibleTab();
-        }
-    }
 
     /**
      * We hide the tab instead of removing it from the DOM.
      * emit the onCloseTab event to handle the logic outside the component.
      * @param tabToHide the tab to hide
+     * @private
      */
-    hideTab(tabToHide: TabComponent<T>): void {
+    private hideTab(tabToHide: TabComponent<T>): void {
         // hide the tab instead of removing it from the DOM
         tabToHide.isVisible = false;
         this.onCloseTab.emit(tabToHide.id());
@@ -118,8 +123,9 @@ export class TabsComponent<T> implements AfterContentInit{
 
     /**
      * Deactivate all tabs.
+     * @private
      */
-    deactivateTab(): void {
+    private deactivateTab(): void {
         this.tabElements().forEach((tab: TabComponent<T>): void => {
             // Deactivate all tabs
             tab.isActive = false;
@@ -129,8 +135,9 @@ export class TabsComponent<T> implements AfterContentInit{
     /**
      * Activate the first visible tab
      * If no tab is visible, no tab will be activated.
+     * @private
      */
-    activateFirstVisibleTab(): void {
+    private activateFirstVisibleTab(): void {
         //Activate the first visible tab if the removed tab was active
         const tabToActivate: TabComponent<T> = this.tabElements().find((tab: TabComponent<T>):boolean => tab.isVisible);
         if (tabToActivate) {

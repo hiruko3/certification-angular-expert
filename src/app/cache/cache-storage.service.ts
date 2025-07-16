@@ -2,7 +2,7 @@ import {inject, Injectable, InjectionToken} from '@angular/core';
 import {CacheInterface} from './cache.interface';
 import {CacheEntry} from './cache-entry';
 
-// This is the duration in seconds for which the cache will be valid.
+// This is the duration in milliseconds for which the cache will be valid.
 export const CACHE_DURATION = new InjectionToken<number>('CacheDuration that will invalidate the cache after a certain time');
 
 @Injectable({
@@ -10,7 +10,7 @@ export const CACHE_DURATION = new InjectionToken<number>('CacheDuration that wil
 })
 export class CacheStorageService implements CacheInterface<string> {
 
-    readonly cacheDuration: number = inject(CACHE_DURATION, {optional: true}) || 60 * 1000 * 120; // Default to 2 hours
+    readonly cacheDuration: number = inject(CACHE_DURATION, {optional: true}) ?? 60 * 1000 * 120; // Default to 2 hours
 
     /**
      * Sets an item in the cache with sessionStorage.

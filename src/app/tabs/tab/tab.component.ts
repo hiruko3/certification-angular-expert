@@ -25,14 +25,14 @@ export class TabComponent<T> {
    * Indicates whether the tab is currently active.
    * We only display the content of the tab if it is active.
    */
-  isActive = false;
+  isActive: boolean = false;
 
   /**
    * Property to display the tab.
    * If we remove a tab, we can hide it instead of removing it from the DOM.
    * We don't want to mutate the DOM directly, so we use this property to control visibility.
    */
-  isVisible = true;
+  isVisible: boolean = true;
 
   constructor (private changeDetectorRef: ChangeDetectorRef) {
   }
