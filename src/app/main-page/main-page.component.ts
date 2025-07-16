@@ -1,10 +1,9 @@
-import {ChangeDetectionStrategy, Component, inject, Signal} from '@angular/core';
+import {ChangeDetectionStrategy, Component, inject, OnDestroy, Signal} from '@angular/core';
 import {LocationService} from '../location.service';
 import {WeatherService} from '../weather.service';
 import {ConditionsAndZip} from '../conditions-and-zip.type';
 import {CurrentConditionsComponent} from '../current-conditions/current-conditions.component';
 import {ZipcodeEntryComponent} from '../zipcode-entry/zipcode-entry.component';
-import {createFrequencyMap} from '../utils/utils';
 
 @Component({
     selector: 'app-main-page',
@@ -13,7 +12,7 @@ import {createFrequencyMap} from '../utils/utils';
     imports: [ZipcodeEntryComponent, CurrentConditionsComponent],
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MainPageComponent {
+export class MainPageComponent implements OnDestroy {
 
     /**
      * Represents the list of location.
@@ -37,34 +36,19 @@ export class MainPageComponent {
         this.locations = this.locationService.getLocations();
         this.conditions = this.weatherService.getCurrentConditions();
 
-
         // We don't want to use the effect here, as we want to initialize the current conditions based on the locations initialized in the location service.
-        this.locations().forEach((zipCode: string) => {
-            // Check if the current conditions for the zip code already exist
-            if (!this.conditions().some(condition => condition.zip === zipCode)) {
-                this.weatherService.addCurrentConditions(zipCode);
-            }
+        this.locations().forEach((zipCode: string): void => {
+            this.weatherService.addCurrentConditions(zipCode);
         })
-
-        // We sync the current conditions with the locations.
-        if (this.conditions().length > 0) {
-            // count occurence of each zip code in the conditions
-            const frequencyLocation: Map<string, number> = createFrequencyMap(this.locations());
-            const frequencyCondition: Map<string, number> = createFrequencyMap(this.conditions().map((condition: ConditionsAndZip): string => condition.zip));
-
-            // If the frequency of the condition is greater than the frequency of the location, we remove the condition.
-            frequencyCondition.forEach((key: number, value: string) => {
-                const diffBetweenConditionAndLocation = (frequencyCondition.get(value) || 0) - (frequencyLocation.get(value) || 0);
-                if (diffBetweenConditionAndLocation > 0) {
-                    for (let i = 0; i < diffBetweenConditionAndLocation; i++) {
-                        this.weatherService.removeCondition(value)
-                    }
-                }
-            })
-        }
     }
 
-
+    /**
+     * When we leave the component, we reset the current conditions.
+     * We recompute the current conditions when we come back to the component based on the locations.
+     */
+    ngOnDestroy(): void {
+        this.weatherService.resetConditions();
+    }
 
 
     /**

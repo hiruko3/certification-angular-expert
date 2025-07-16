@@ -112,4 +112,10 @@ export class WeatherService {
         }
     }
 
+    /**
+     * Reset the current conditions
+     */
+    resetConditions() {
+        this.currentConditions.set([]);
+    }
 }

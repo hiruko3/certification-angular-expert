@@ -1,14 +1,4 @@
-import {
-    AfterContentInit,
-    ChangeDetectionStrategy,
-    Component,
-    contentChildren,
-    ContentChildren,
-    effect,
-    output,
-    OutputEmitterRef,
-    Signal
-} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, contentChildren, effect, Signal, output, OutputEmitterRef} from '@angular/core';
 import {TabComponent} from './tab/tab.component';
 import {MyButtonDirective} from './directive/my-button.directive';
 import {NgClass} from '@angular/common';
@@ -33,7 +23,7 @@ import {NgClass} from '@angular/common';
  *     <app-tab label="Tab 3">Content for Tab 3</app-tab>
  * </app-tabs>
  */
-export class TabsComponent<T> implements AfterContentInit{
+export class TabsComponent<T> {
 
     /**
      * This is our projected children's content.
@@ -42,26 +32,22 @@ export class TabsComponent<T> implements AfterContentInit{
     readonly tabElements: Signal<readonly TabComponent<T>[]> | undefined = contentChildren<TabComponent<T>>(TabComponent);
 
     /**
-     * Used to retrieve the already defined tabs in the template.
-     */
-    @ContentChildren(TabComponent) tabsAlreadyDefined: TabComponent<T>[] | undefined;
-
-    /**
      * This output emitter is used to notify when a tab is closed.
      */
     readonly onCloseTab: OutputEmitterRef<T> = output<T>();
-
     /**
      * Here we use signal reactivity to retrieve the tab elements and set the first tab as active by default.
      * When a new tab is added or removed, it will trigger the effect and check if there are any tabs.
      */
-    constructor() {
+    constructor(private readonly changeDetectorRef: ChangeDetectorRef) {
         effect((): void => {
             const tabs: readonly TabComponent<T>[] = this.tabElements();
             if (tabs && tabs.length > 0) {
                 // Set the first tab as active by default
                 if (!tabs.some((tab: TabComponent<T>): boolean => tab.isActive)) {
                     this.activateFirstTabVisible(tabs);
+                    // we force the change detection to update the view in reactive context
+                    this.changeDetectorRef.markForCheck();
                 }
             }
         })
@@ -145,13 +131,4 @@ export class TabsComponent<T> implements AfterContentInit{
         }
     }
 
-
-    /**
-     * Returns the element reference of the tabs component when already defined.
-     * It permits activating the first tab after the content rendering is done.
-     * ContentChildren seem to have a little issue to handle correctly the first initialization on this angular version.
-     */
-    ngAfterContentInit(): void {
-        this.activateFirstTabVisible(this.tabsAlreadyDefined);
-    }
 }

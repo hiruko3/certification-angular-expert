@@ -1,12 +1,11 @@
-@if (tabElements()) {
-    <div>
-        @for (tab of tabElements(); track tab) {
-            @if (tab.isVisible) {
-                <button [ngClass]="{ 'active-tab-class' : tab.isActive && tab.isVisible }"
-                        (click)="selectTab(tab)">{{ tab.label() }} <span class="cross-close"
-                                                                         (click)=removeTab(tab)>X</span></button>
-            }
+<div>
+    @for (tab of tabElements(); track tab) {
+        @if (tab.isVisible) {
+            <button [ngClass]="{ 'active-tab-class' : tab.isActive && tab.isVisible }"
+                    (click)="selectTab(tab)">{{ tab.label() }} <span class="cross-close"
+                                                                     (click)=removeTab(tab)>X</span></button>
         }
-        <ng-content></ng-content>
-    </div>
-}
+    }
+    <ng-content></ng-content>
+</div>
+
