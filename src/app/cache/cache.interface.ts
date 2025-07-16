@@ -1,3 +1,7 @@
+/**
+ * This is the interface for a cache service.
+ * It defines the methods that a cache service should implement.
+ */
 export interface CacheInterface<U> {
 
   /**

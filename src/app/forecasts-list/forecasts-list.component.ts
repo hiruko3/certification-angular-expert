@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import {Component, Signal} from '@angular/core';
 import {WeatherService} from '../weather.service';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import {ActivatedRoute, RouterLink} from '@angular/router';
 import {Forecast} from './forecast.type';
-import { NgFor, DecimalPipe, DatePipe } from '@angular/common';
+import {DatePipe, DecimalPipe, NgFor} from '@angular/common';
 
 @Component({
     selector: 'app-forecasts-list',
@@ -13,14 +13,26 @@ import { NgFor, DecimalPipe, DatePipe } from '@angular/common';
 })
 export class ForecastsListComponent {
 
-  zipcode: string;
-  forecast: Forecast;
+    /**
+     * The zipcode for which the forecast is being displayed.
+     */
+    zipcode: string;
 
-  constructor(protected weatherService: WeatherService, route : ActivatedRoute) {
-    route.params.subscribe(params => {
-      this.zipcode = params['zipcode'];
-      weatherService.getForecast(this.zipcode)
-        .subscribe(data => this.forecast = data);
-    });
-  }
+    /**
+     * Signal that holds the forecast data for the specified zipcode.
+     */
+    forecast: Signal<Forecast>;
+
+    /**
+     * ForecastsListComponent is responsible for displaying the weather forecast for a specific zipcode.
+     * @param weatherService
+     * @param route
+     */
+    constructor(protected weatherService: WeatherService, route: ActivatedRoute) {
+        route.params.subscribe(params => {
+            this.zipcode = params['zipcode'];
+            this.weatherService.computeForecast(this.zipcode);
+        });
+        this.forecast = this.weatherService.getForecast();
+    }
 }

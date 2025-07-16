@@ -3,7 +3,7 @@ import {CacheInterface} from './cache.interface';
 import {CacheEntry} from './cache-entry';
 
 // This is the duration in seconds for which the cache will be valid.
-export const CACHE_DURATION = new InjectionToken<number>('CacheDuration');
+export const CACHE_DURATION = new InjectionToken<number>('CacheDuration that will invalidate the cache after a certain time');
 
 @Injectable({
     providedIn: 'root'
@@ -23,6 +23,7 @@ export class CacheStorageService implements CacheInterface<string> {
             value: value,
             timeStamp: Date.now() // Store the current timestamp
         };
+        console.log(`Setting cache item with key: ${key}, value: ${JSON.stringify(value)}, cacheDuration: ${this.cacheDuration}`);
         sessionStorage.setItem(key, JSON.stringify(cacheEntry));
     }
 
@@ -36,15 +37,17 @@ export class CacheStorageService implements CacheInterface<string> {
      */
     getItem(key: string): string {
         let item: string | null = null;
-        const cacheEntryString = sessionStorage.getItem(key);
+        const cacheEntryString: string = sessionStorage.getItem(key);
         if (cacheEntryString) {
             const cacheEntry: CacheEntry<any> = JSON.parse(cacheEntryString);
-            const currentTime = Date.now();
+            const currentTime: number = Date.now();
 
-            // Check if the cache entry is still valid
+            // Check if the cache entry is still valid based on the cache duration
             if (currentTime - cacheEntry.timeStamp > this.cacheDuration) {
+                console.log(`Cache item with key: ${key} has expired. Removing from cache.`);
                 sessionStorage.removeItem(key); // Remove expired item
             } else {
+                console.log(`Cache item with key: ${key} is valid. Returning cached value.`);
                 item = JSON.stringify(cacheEntry.value); // Return the cached value
             }
         }

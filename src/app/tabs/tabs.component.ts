@@ -1,13 +1,13 @@
 import {
+    AfterContentInit,
     ChangeDetectionStrategy,
     Component,
     contentChildren,
+    ContentChildren,
     effect,
     output,
     OutputEmitterRef,
-    Signal,
-    ElementRef,
-    AfterContentInit, ContentChildren
+    Signal
 } from '@angular/core';
 import {TabComponent} from './tab/tab.component';
 import {MyButtonDirective} from './directive/my-button.directive';
@@ -36,11 +36,14 @@ import {NgClass} from '@angular/common';
 export class TabsComponent<T> implements AfterContentInit{
 
     /**
-     * This is our projected content children.
+     * This is our projected children's content.
      * It will retrieve all TabComponent instances that are children of this TabsComponent.
      */
     readonly tabElements: Signal<readonly TabComponent<T>[]> | undefined = contentChildren<TabComponent<T>>(TabComponent);
 
+    /**
+     * Used to retrieve the already defined tabs in the template.
+     */
     @ContentChildren(TabComponent) tabsAlreadyDefined: TabComponent<T>[] | undefined;
 
     /**
@@ -50,7 +53,7 @@ export class TabsComponent<T> implements AfterContentInit{
 
     /**
      * Here we use signal reactivity to retrieve the tab elements and set the first tab as active by default.
-     * When a new tab is added, it will trigger the effect and check if there are any tabs.
+     * When a new tab is added or removed, it will trigger the effect and check if there are any tabs.
      */
     constructor() {
         effect((): void => {
@@ -69,11 +72,12 @@ export class TabsComponent<T> implements AfterContentInit{
      * @param tabs
      * @private
      */
-    private activateFirstTabVisible(tabs : readonly TabComponent<T>[]): TabComponent<T> {
+    private activateFirstTabVisible(tabs : readonly TabComponent<T>[]): void {
         const firstTabVisible: TabComponent<T> = tabs.find((tab: TabComponent<T>): boolean => tab.isVisible);
-        firstTabVisible.isActive = true;
-        firstTabVisible.forceRendering();
-        return firstTabVisible;
+        if(firstTabVisible) {
+            firstTabVisible.isActive = true;
+            firstTabVisible.forceRendering();
+        }
     }
 
     /**
@@ -82,9 +86,8 @@ export class TabsComponent<T> implements AfterContentInit{
      * @param tab
      */
     selectTab(tab: TabComponent<T>): void {
-        const tabs: readonly TabComponent<T>[] = this.tabElements();
         this.deactivateTab();
-        tabs[tabs.indexOf(tab)].isActive = true;
+        tab.isActive = true;
     }
 
     /**
@@ -104,7 +107,7 @@ export class TabsComponent<T> implements AfterContentInit{
 
     /**
      * We hide the tab instead of removing it from the DOM.
-     * emit the onCloseTab event to handle the logic outside of the component.
+     * emit the onCloseTab event to handle the logic outside the component.
      * @param tabToHide the tab to hide
      */
     hideTab(tabToHide: TabComponent<T>): void {
@@ -138,6 +141,8 @@ export class TabsComponent<T> implements AfterContentInit{
 
     /**
      * Returns the element reference of the tabs component when already defined.
+     * It permits activating the first tab after the content rendering is done.
+     * ContentChildren seem to have a little issue to handle correctly the first initialization on this angular version.
      */
     ngAfterContentInit(): void {
         this.activateFirstTabVisible(this.tabsAlreadyDefined);
