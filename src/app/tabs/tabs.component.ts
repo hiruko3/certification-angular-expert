@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, contentChildren, effect, Signal, output, OutputEmitterRef} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, contentChildren, effect, Signal, output, OutputEmitterRef, computed} from '@angular/core';
 import {TabComponent} from './tab/tab.component';
 import {MyButtonDirective} from './directive/my-button.directive';
 import {NgClass} from '@angular/common';
@@ -29,7 +29,12 @@ export class TabsComponent<T> {
      * This is our projected children's content.
      * It will retrieve all TabComponent instances that are children of this TabsComponent.
      */
-    readonly tabElements: Signal<readonly TabComponent<T>[]> | undefined = contentChildren<TabComponent<T>>(TabComponent);
+    private readonly tabElements: Signal<readonly TabComponent<T>[]> | undefined = contentChildren<TabComponent<T>>(TabComponent);
+
+    /**
+     * Assure that the tabs are sorted in the alphabetical order of their labels.
+     */
+    readonly sortedTabsElement: Signal<readonly TabComponent<T>[]>;
 
     /**
      * This output emitter is used to notify when a tab is closed.
@@ -40,6 +45,15 @@ export class TabsComponent<T> {
      * When a new tab is added or removed, it will trigger the effect and check if there are any tabs.
      */
     constructor(private readonly changeDetectorRef: ChangeDetectorRef) {
+
+        this.sortedTabsElement = computed((): TabComponent<T>[] => {
+            const tabs: TabComponent<T>[] = [...this.tabElements()];
+            tabs.sort((a: TabComponent<T>, b: TabComponent<T>): number => {
+                return a.label().localeCompare(b.label());
+            });
+            return tabs;
+        })
+
         effect((): void => {
             const tabs: readonly TabComponent<T>[] = this.tabElements();
             if (tabs && tabs.length > 0) {

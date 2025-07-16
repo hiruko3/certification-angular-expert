@@ -9,7 +9,7 @@ import {TabComponent} from './tab/tab.component';
             <app-tab [label]="'Tab 1'" [id]="1" #tab1>
                 <div class="projected-content">Tab 1 Content</div>
             </app-tab>
-            <app-tab [label]="'Tab 2'" [id]="2" #tab2>
+            <app-tab [label]="'A Tab 2'" [id]="2" #tab2>
                 <div class="projected-content">Tab 2 Content</div>
             </app-tab>
         </app-tabs>
@@ -49,7 +49,7 @@ describe('TabsComponent', () => {
         fixture.detectChanges();
 
         const tabsComponent = fixture.debugElement.children[0].componentInstance as TabsComponent<number>;
-        const tabs = tabsComponent.tabElements();
+        const tabs = tabsComponent.sortedTabsElement();
 
         tabsComponent.selectTab(tabs[1]);
         fixture.detectChanges();
@@ -62,14 +62,14 @@ describe('TabsComponent', () => {
         fixture.detectChanges();
 
         const tabsComponent = fixture.debugElement.children[0].componentInstance as TabsComponent<number>;
-        const tabs = tabsComponent.tabElements();
+        const tabs = tabsComponent.sortedTabsElement();
         expect(tabs.length).toBe(2);
     })
 
     it("should active the first tab in reactive context", () => {
 
         const tabsComponent = fixture.debugElement.children[0].componentInstance as TabsComponent<number>;
-        const tabs = tabsComponent.tabElements();
+        const tabs = tabsComponent.sortedTabsElement();
 
         expect(tabs[0].isActive).toBeFalse();
         expect(tabs[1].isActive).toBeFalse();
@@ -84,7 +84,7 @@ describe('TabsComponent', () => {
         fixture.detectChanges();
 
         const tabsComponent = fixture.debugElement.children[0].componentInstance as TabsComponent<number>;
-        const tabs = tabsComponent.tabElements();
+        const tabs = tabsComponent.sortedTabsElement();
 
         tabs[0].isActive = true;
         tabs[1].isVisible = true;
@@ -98,7 +98,7 @@ describe('TabsComponent', () => {
         fixture.detectChanges();
 
         const tabsComponent = fixture.debugElement.children[0].componentInstance as TabsComponent<number>;
-        const tabs = tabsComponent.tabElements();
+        const tabs = tabsComponent.sortedTabsElement();
 
         tabs.forEach(tab => {
             tabsComponent.removeTab(tab);
@@ -106,5 +106,16 @@ describe('TabsComponent', () => {
         fixture.detectChanges();
 
         expect(tabs.some(tab => tab.isActive)).toBeFalse();
+    })
+
+    it('should order the tabs by label', () => {
+        fixture.detectChanges();
+
+        const tabsComponent = fixture.debugElement.children[0].componentInstance as TabsComponent<number>;
+        const tabs = tabsComponent.sortedTabsElement();
+
+
+        expect(tabs[0].label()).toBe('A Tab 2');
+        expect(tabs[1].label()).toBe('Tab 1');
     })
 });

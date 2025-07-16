@@ -1,5 +1,5 @@
 <div>
-    @for (tab of tabElements(); track tab) {
+    @for (tab of sortedTabsElement(); track tab) {
         @if (tab.isVisible) {
             <button [ngClass]="{ 'active-tab-class' : tab.isActive && tab.isVisible }"
                     (click)="selectTab(tab)">{{ tab.label() }} <span class="cross-close"
