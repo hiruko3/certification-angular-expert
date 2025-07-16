@@ -10,8 +10,8 @@ describe('TabsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TabsComponent]
     })
-    .compileComponents();
-    
+        .compileComponents();
+
     fixture = TestBed.createComponent(TabsComponent<string>);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -20,4 +20,5 @@ describe('TabsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });
